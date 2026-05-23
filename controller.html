@@ -1,3 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Graduation Controller</title>
+
+  <style>
+    body{
+      margin:0;
+      overflow:hidden;
+      background:black;
+    }
+
+    iframe{
+      width:100vw;
+      height:100vh;
+      border:none;
+    }
+
+    #scanner{
+      position:fixed;
+      top:20px;
+      left:20px;
+      z-index:9999;
+      padding:15px;
+      font-size:24px;
+      width:320px;
+      background:white;
+      border:3px solid red;
+      border-radius:10px;
+    }
+
+    #status{
+      position:fixed;
+      top:90px;
+      left:20px;
+      z-index:9999;
+      background:black;
+      color:white;
+      padding:10px 15px;
+      font-size:18px;
+      border-radius:8px;
+      opacity:0.8;
+    }
+  </style>
+</head>
+
+<body>
+
+<input id="scanner" placeholder="Scan student card here">
+
+<div id="status">
+READY
+</div>
+
+<iframe id="slidesFrame"></iframe>
+
+<script>
+
 const PRESENTATION_ID = "1Nl9W_x2c2ukW70HE2migxxsRcqPGk_FsqgbbGp_NqoY";
 
 const slides = {
@@ -14,17 +73,43 @@ function goToSlide(studentID){
 `https://docs.google.com/presentation/d/${PRESENTATION_ID}/present#slide=${slides[studentID]}`;
 
     document.getElementById("slidesFrame").src = url;
+
+    document.getElementById("status").innerText =
+      "Showing: " + studentID;
+
+  } else {
+
+    document.getElementById("status").innerText =
+      "Student ID not found";
+
   }
 }
 
-document
-.getElementById("scanner")
-.addEventListener("keypress", function(e){
+const scannerInput = document.getElementById("scanner");
+
+scannerInput.focus();
+
+document.addEventListener("click", () => {
+  scannerInput.focus();
+});
+
+scannerInput.addEventListener("keypress", function(e){
 
   if(e.key === "Enter"){
 
-    goToSlide(this.value.trim());
+    const studentID = this.value.trim();
+
+    goToSlide(studentID);
 
     this.value = "";
+
+    setTimeout(() => {
+      scannerInput.focus();
+    }, 100);
   }
 });
+
+</script>
+
+</body>
+</html>
